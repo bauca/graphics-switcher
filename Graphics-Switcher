@@ -1,0 +1,129 @@
+#!/bin/bash
+# -------------------------------------------------------
+# A shell script that fixes screen tearing on intel video cards and switches between nvidia and intel graphic cards
+# Written by: Bruno Assis
+# Created on: 25/03/2017
+# -------------------------------------------------------
+
+#asks for sudo if the user uid != 0 then calls the script again with the current user name
+(( EUID != 0 )) && exec sudo -- "$0" "$@$USER"
+
+#-----------------
+#----Settings-----
+#-----------------
+
+PREVIOUS_USER=$1
+SCRIPT_NAME="20-intel.conf"
+CONF_BASE_PATH="/etc/X11/"
+CONF_BASE_DIR="xorg.conf.d"
+CONF_PATH="/etc/X11/$CONF_BASE_DIR/"
+CONF_FILE_PATH="$CONF_PATH$SCRIPT_NAME"
+CURRENT_VIDEO_CARD=""
+
+#-----------------
+#----Functions----
+#-----------------
+
+#creates the config file.
+function CreateTearingFreeFile {
+	echo 'Section "Device"' >> $1
+	echo '   Identifier  "Intel Graphics"' >> $1
+	echo '   Driver      "intel"' >> $1
+	echo '   Option      "TearFree"    "true"' >> $1
+	echo "EndSection" >> $1
+}
+
+#switches the environment to use nvidia graphics card
+function SwitchToNvdia {
+	echo -e "\n Switching to nvidia."
+	rm $CONF_FILE_PATH
+	prime-select nvidia
+}
+
+#switches the environment to use intel's graphics card
+function SwitchToIntel {
+	echo -e "\n Switching to Intel."
+	cd $CONF_PATH
+	CreateTearingFreeFile $SCRIPT_NAME
+	prime-select intel
+}
+
+function LogoutFromCurrentSession {
+	echo -e "\n You'll need to logout in order to changes take effect."
+	echo -e "\n Do you wish to logout now? (y | n)"	
+	read -n 1 option
+	if [[ "$option" = "y" || "$option" = "Y" ]]; then
+		#log out from the current session for the current user
+		su -c "kill -9 -1" "$PREVIOUS_USER"
+	fi
+}
+
+function SetupEnvironment {
+
+	if [ ! -d "$CONF_BASE_PATH" ]; then 
+		echo -e "\n error: could not find $CONF_BASE_PATH."
+		exit 1
+	else
+		if [ ! -d "$CONF_PATH" ]; then 
+			echo -e "\n could not find $CONF_BASE_DIR."
+			echo -e "\n trying to create it."
+			cd $CONF_BASE_PATH
+			mkdir $CONF_BASE_DIR
+			if [ ! -d "$CONF_PATH" ]; then
+				echo -e "\n could not create $CONF_BASE_DIR folder."
+				exit 1
+			else
+				echo -e "\n $CONF_BASE_DIR folder created successfully."
+			fi
+		fi
+	fi
+}
+
+function CheckForCurrentVideoCardInUse {
+	local _VIDEO_CARD=`glxinfo|egrep "OpenGL vendor|OpenGL renderer*"`
+	if [[ $_VIDEO_CARD == *"NVIDIA"* && $_VIDEO_CARD == *"GeForce"* ]]; then
+		CURRENT_VIDEO_CARD="NVIDIA"
+	elif [[ $_VIDEO_CARD == *"Intel"* && $_VIDEO_CARD == *"Intel"* ]]; then
+		CURRENT_VIDEO_CARD="INTEL"
+	else
+		ErrorHandler
+	fi
+}
+
+function ErrorHandler {
+		echo -e "\n Could not find your video card"
+		echo -e "\n Please use glxinfo to check if the name is correct or if you are using NVIDIA's or Intel's card"
+		exit 1
+}
+
+#------------------
+#--Program Flow ---
+#------------------
+
+#Setups the environment if it hasn't already been set.
+
+CheckForCurrentVideoCardInUse
+SetupEnvironment
+
+echo -e " current video card in use: $CURRENT_VIDEO_CARD"
+
+#If the file exists then we should delete it and start nvidia
+
+if [ $CURRENT_VIDEO_CARD == "INTEL" ]; then
+	echo -e "\n Switch graphics card to NVIDIA? (y | n)"
+	read -n 1 option
+	if [[ "$option" == "y" || "$option" == "Y" ]]; then
+		SwitchToNvdia
+		LogoutFromCurrentSession
+	fi
+elif [ $CURRENT_VIDEO_CARD == "NVIDIA" ]; then
+	echo -e "\n Switch graphics card to INTEL? (y | n)"
+	read -n 1 option
+	if [[ "$option" == "y" || "$option" == "Y" ]]; then
+		SwitchToIntel
+		LogoutFromCurrentSession
+	fi
+else
+	ErrorHandler
+fi
+
