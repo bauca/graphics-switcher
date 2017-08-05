@@ -83,7 +83,7 @@ function CheckForCurrentVideoCardInUse {
 	local _VIDEO_CARD=`glxinfo|egrep "OpenGL vendor|OpenGL renderer*"`
 	if [[ $_VIDEO_CARD == *"NVIDIA"* && $_VIDEO_CARD == *"GeForce"* ]]; then
 		CURRENT_VIDEO_CARD="NVIDIA"
-	elif [[ $_VIDEO_CARD == *"Intel"* && $_VIDEO_CARD == *"Intel"* ]]; then
+	elif [[ $_VIDEO_CARD == *"Intel"* ]]; then
 		CURRENT_VIDEO_CARD="INTEL"
 	else
 		ErrorHandler
