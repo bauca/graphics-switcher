@@ -3,7 +3,7 @@
 # General Information
 - Bash file for switching between NVIDIA and Intel's video cards
 - Besides switching between graphics cards, it also fixes the video/screen tearing when using <b> Intel cards </b>.
-- This script do not fix screen tearing on NVIDIA Graphics Cards, that's why we need to switch between them.
+- This script does not fix screen tearing on NVIDIA Graphics Cards, that's why we need to switch between them.
 - ** IMPORTANT ** This script might not work properly with NVIDIA QUADRO video cards. For more information see: https://github.com/bauca/graphics-switcher/issues/3
 
 
