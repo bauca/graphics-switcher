@@ -80,10 +80,10 @@ function SetupEnvironment {
 }
 
 function CheckForCurrentVideoCardInUse {
-	local _VIDEO_CARD=`glxinfo|egrep "OpenGL vendor|OpenGL renderer*"`
-	if [[ $_VIDEO_CARD == *"NVIDIA"* && $_VIDEO_CARD == *"GeForce"* ]]; then
+	local _VIDEO_CARD=`prime-select query`
+	if [[ $_VIDEO_CARD == "nvidia" ]]; then
 		CURRENT_VIDEO_CARD="NVIDIA"
-	elif [[ $_VIDEO_CARD == *"Intel"* ]]; then
+	elif [[ $_VIDEO_CARD == "intel" ]]; then
 		CURRENT_VIDEO_CARD="INTEL"
 	else
 		ErrorHandler
@@ -126,4 +126,3 @@ elif [ $CURRENT_VIDEO_CARD == "NVIDIA" ]; then
 else
 	ErrorHandler
 fi
-
