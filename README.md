@@ -6,6 +6,8 @@
 - This script does not fix screen tearing on NVIDIA Graphics Cards, that's why we need to switch between them.
 - ** IMPORTANT ** This script might not work properly with NVIDIA QUADRO video cards. For more information see: https://github.com/bauca/graphics-switcher/issues/3
 
+# Open PRs
+- (05/07/2021) - https://github.com/bauca/graphics-switcher/pull/4 - PR claims to use `prime-select query` command for the detection of the active GPU thus dropping off the requirement of `mesa-utils` (Still needs to be tested before merged).
 
 # Release notes
 - (03/08/2017) - Updated requirements list as suggested by issue #2 (https://github.com/bauca/graphics-switcher/issues/2).
