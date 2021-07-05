@@ -26,12 +26,19 @@
 - Open terminal and type: sudo apt-get update
 - Install the latest (375.66) Nvidia binary driver by following these steps:
 
-        1 - Open the Ubuntu's 'System Settings' from ubuntu's left bar.
-				2 - Click on the 'Software & Updates' icon.
-				3 - Select the tab 'Additional Drivers'.
-				4 - Check 'Using NVIDIA binary driver - version 375.66 from nvidia-375 (proprietary, tested).
-				5 - Click on 'Apply Changes', wait until the installation is complete.
-				6 - Reboot
+	
+	1 - Open the Ubuntu's 'System Settings' from ubuntu's left bar.
+	
+	2 - Click on the 'Software & Updates' icon.
+	
+	3 - Select the tab 'Additional Drivers'.
+	
+	4 - Check 'Using NVIDIA binary driver - version 375.66 from nvidia-375 (proprietary, tested).
+	
+	5 - Click on 'Apply Changes', wait until the installation is complete.
+	
+	6 - Reboot
+	
 				
 - Install 'glxinfo' by opening terminal and typing: sudo apt-get install mesa-utils
 - Download or Clone the graphics-switch script.
